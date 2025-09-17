@@ -56,6 +56,7 @@ public class RunImpl implements IRun {
     private final String  rasRunId;
     private final String  interruptReason;
     private final Instant interruptedAt;
+    private final Instant allocatedTimeout;
     private List<RunRasAction> rasActions = new ArrayList<>();
     private final Set<String> tags;
 
@@ -94,6 +95,7 @@ public class RunImpl implements IRun {
         gherkin = runProperties.get(prefix + DssPropertyKeyRunNameSuffix.GHERKIN);
         tags = getTagsFromDss(runProperties, prefix);
         interruptedAt = getInterruptedAtTimeFromDss(runProperties, prefix);
+        allocatedTimeout = getAllocatedTimeoutFromDss(runProperties, prefix);
 
         String encodedRasActions = runProperties.get(prefix + DssPropertyKeyRunNameSuffix.RAS_ACTIONS);
         if (encodedRasActions != null) {
@@ -143,12 +145,20 @@ public class RunImpl implements IRun {
     }
 
     private Instant getInterruptedAtTimeFromDss(Map<String, String> runProperties, String prefix) {
-        Instant interruptedAt = null;
-        String interruptedAtStr = runProperties.get(prefix + DssPropertyKeyRunNameSuffix.INTERRUPTED_AT);
-        if (interruptedAtStr != null) {
-            interruptedAt = Instant.parse(interruptedAtStr);
+        return getTimeValueFromDss(runProperties, prefix + DssPropertyKeyRunNameSuffix.INTERRUPTED_AT);
+    }
+
+    private Instant getAllocatedTimeoutFromDss(Map<String, String> runProperties, String prefix) {
+        return getTimeValueFromDss(runProperties, prefix + DssPropertyKeyRunNameSuffix.ALLOCATE_TIMEOUT);
+    }
+
+    private Instant getTimeValueFromDss(Map<String, String> runProperties, String propertyKey) {
+        Instant timeToReturn = null;
+        String timeAsStr = runProperties.get(propertyKey);
+        if (timeAsStr != null) {
+            timeToReturn = Instant.parse(timeAsStr);
         }
-        return interruptedAt;
+        return timeToReturn;
     }
 
     private Set<String> getTagsFromDss(Map<String, String> runProperties, String prefix) {
@@ -312,6 +322,11 @@ public class RunImpl implements IRun {
     }
 
     @Override
+    public Instant getAllocatedTimeout() {
+        return allocatedTimeout;
+    }
+
+    @Override
     public List<RunRasAction> getRasActions() {
         return this.rasActions;
     }
@@ -364,6 +379,13 @@ public class RunImpl implements IRun {
             buff.append(" waitUntil: "+waitUntil.toString());
         }
 
+        if (this.interruptedAt == null) {
+            buff.append(" interruptedAt: null");
+        } else {
+            buff.append(" interruptedAt: "+interruptedAt.toString());
+        }
+
+        buff.append(" interruptReason: "+interruptReason);
         buff.append(" requestor: "+requestor);
         buff.append(" stream: "+stream);
         buff.append(" repo: "+repo);
