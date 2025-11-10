@@ -78,7 +78,7 @@ jobs:
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          gpg --homedir /home/runner/work/gpg --passphrase $GPG_PASSPHRASE --import /home/runner/work/secrets/galasa.gpg
+          gpg --homedir /home/runner/work/gpg --passphrase-file /home/runner/work/secrets/passphrase.file --import /home/runner/work/secrets/galasa.gpg
 
       # This is required so the galasabld-amd64 image can be run in the next step.
       - name: Login to Github Container Registry
@@ -438,7 +438,7 @@ jobs:
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          gpg --homedir /home/runner/work/gpg --passphrase $GPG_PASSPHRASE --import /home/runner/work/secrets/galasa.gpg
+          gpg --homedir /home/runner/work/gpg --passphrase-file /home/runner/work/secrets/passphrase.file --import /home/runner/work/secrets/galasa.gpg
 
       # This is required so the galasabld-amd64 image can be run in the next step.
       - name: Login to Github Container Registry
@@ -707,7 +707,7 @@ jobs:
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          gpg --homedir /home/runner/work/gpg --passphrase $GPG_PASSPHRASE --import /home/runner/work/secrets/galasa.gpg
+          gpg --homedir /home/runner/work/gpg --passphrase-file /home/runner/work/secrets/passphrase.file --import /home/runner/work/secrets/galasa.gpg
 
       # This is required so the galasabld-amd64 image can be run in the next step.
       - name: Login to Github Container Registry
